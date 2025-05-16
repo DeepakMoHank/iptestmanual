@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Precise Location Logger</title>
+</head>
+<body>
+  <h1>Welcome to My Location Logger</h1>
+  <p>We are logging your precise location (with permission).</p>
+
+  <script>
+    // Ask for precise location permission from the browser
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          // Log to Webhook.site (replace with your actual URL)
+          fetch("https://webhook.site/9e3917a0-e7c1-46b3-9676-2dbd6e7480db", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              method: "Browser GPS",
+              latitude: latitude,
+              longitude: longitude,
+              accuracy: position.coords.accuracy + " meters",
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent
+            })
+          });
+        },
+        function(error) {
+          console.error("Geolocation failed:", error.message);
+        }
+      );
+    } else {
+      console.warn("Geolocation not supported in this browser.");
+    }
+  </script>
+</body>
+</html>
+
+
+
